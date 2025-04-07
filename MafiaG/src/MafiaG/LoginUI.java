@@ -1,8 +1,10 @@
-// LoginUI.java
 package MafiaG;
 
 import javax.swing.*;
 import javax.swing.border.*;
+
+import DB.DatabaseManager;
+
 import java.awt.*;
 
 public class LoginUI {
@@ -59,14 +61,32 @@ public class LoginUI {
         loginPanel.setLayout(new BoxLayout(loginPanel, BoxLayout.Y_AXIS));
         loginPanel.setBorder(new EmptyBorder(10, 20, 0, 20));
 
+        // 아이디, 비밀번호 입력창
         JTextField idField = new JTextField();
         JPasswordField pwField = new JPasswordField();
 
+        Dimension inputSize = new Dimension(Integer.MAX_VALUE, 40);
+        idField.setMaximumSize(inputSize);
+        pwField.setMaximumSize(inputSize);
+        idField.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+        pwField.setFont(new Font("맑은 고딕", Font.PLAIN, 14));
+
+        // 로그인 버튼
         JButton loginBtn = new JButton("로그인");
         loginBtn.setFont(new Font("맑은 고딕", Font.BOLD, 14));
         loginBtn.setBackground(new Color(227, 232, 236));
-        loginBtn.setPreferredSize(new Dimension(100, 90));
+        loginBtn.setPreferredSize(new Dimension(100, 40));
+        loginBtn.setMaximumSize(new Dimension(100, 40));
 
+        // 로그인 버튼을 감싸는 패널 (세로 가운데 정렬을 위해)
+        JPanel loginBtnPanel = new JPanel();
+        loginBtnPanel.setLayout(new BoxLayout(loginBtnPanel, BoxLayout.Y_AXIS));
+        loginBtnPanel.setOpaque(false);
+        loginBtnPanel.add(Box.createVerticalGlue());
+        loginBtnPanel.add(loginBtn);
+        loginBtnPanel.add(Box.createVerticalGlue());
+
+        // 입력 필드 + 버튼 조립
         JPanel inputWrapper = new JPanel(new BorderLayout());
         inputWrapper.setOpaque(false);
         inputWrapper.setPreferredSize(new Dimension(0, 90));
@@ -78,15 +98,18 @@ public class LoginUI {
         inputPanel.add(idField);
         inputPanel.add(Box.createVerticalStrut(5));
         inputPanel.add(pwField);
+
         inputWrapper.add(inputPanel, BorderLayout.CENTER);
-        inputWrapper.add(loginBtn, BorderLayout.EAST);
+        inputWrapper.add(loginBtnPanel, BorderLayout.EAST);
+
         loginPanel.add(inputWrapper);
 
         JLabel errorLabel = new JLabel("※ 아이디 또는 비밀번호를 확인하세요.");
         errorLabel.setForeground(Color.RED);
+        errorLabel.setVisible(false);
         loginPanel.add(errorLabel);
 
-        // 버튼
+        // 버튼 (회원가입 / 계정찾기)
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
         buttonPanel.setOpaque(false);
         JButton signupBtn = new JButton("회원가입");
@@ -95,19 +118,38 @@ public class LoginUI {
         buttonPanel.add(findBtn);
         loginPanel.add(buttonPanel);
 
-        // 조립
+        // 전체 조립
         centerPanel.add(logoPanel);
         centerPanel.add(rankingPanel);
         centerPanel.add(Box.createVerticalStrut(10));
         centerPanel.add(loginPanel);
-        contentPane.add(centerPanel);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.weightx = 1;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        gbc.insets = new Insets(30, 0, 0, 0);
+
+        contentPane.add(centerPanel, gbc);
+
         frame.setContentPane(contentPane);
         frame.setVisible(true);
 
-        // 이벤트
+        // 이벤트 처리
         loginBtn.addActionListener(e -> {
-            frame.dispose();
-            new BeforePlay();
+            String inputId = idField.getText();
+            String inputPw = new String(pwField.getPassword());
+
+            boolean success = DatabaseManager.checkLogin(inputId, inputPw);
+            if (success) {
+                JOptionPane.showMessageDialog(frame, "로그인 성공!", "성공", JOptionPane.INFORMATION_MESSAGE);
+                frame.dispose();
+                new BeforePlay(); // 다음 화면
+            } else {
+                errorLabel.setVisible(true);
+            }
         });
 
         signupBtn.addActionListener(e -> {

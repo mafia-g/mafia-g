@@ -36,7 +36,7 @@ public class SignupUI extends JFrame {
 
         formPanel.add(createInputGroup("아이디", JTextField.class));
         formPanel.add(createInputGroup("비밀번호", JPasswordField.class));
-        formPanel.add(createInputGroup("확인", JPasswordField.class));
+        formPanel.add(createInputGroup("비밀번호 확인", JPasswordField.class));
         formPanel.add(createInputGroup("닉네임", JTextField.class));
         formPanel.add(createInputGroup("이메일", JTextField.class));
 
@@ -60,10 +60,32 @@ public class SignupUI extends JFrame {
         });
 
         signupButton.addActionListener(e -> {
-            dispose(); // 회원가입 창 닫기
-            onSignupComplete.run(); // 다시 로그인 UI 실행
-        });
+            // 입력값 가져오기
+            String id = ((JTextField)((JPanel) formPanel.getComponent(0)).getComponent(1)).getText();
+            String pw = new String(((JPasswordField)((JPanel) formPanel.getComponent(1)).getComponent(1)).getPassword());
+            String pwConfirm = new String(((JPasswordField)((JPanel) formPanel.getComponent(2)).getComponent(1)).getPassword());
+            String nickname = ((JTextField)((JPanel) formPanel.getComponent(3)).getComponent(1)).getText();
+            String email = ((JTextField)((JPanel) formPanel.getComponent(4)).getComponent(1)).getText();
 
+            // 비밀번호 확인
+            if (!pw.equals(pwConfirm)) {
+                JOptionPane.showMessageDialog(SignupUI.this, "비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            // DB에 회원정보 저장
+            boolean success = DB.DatabaseManager.insertNewMember(id, pw, nickname, email);
+
+            if (success) {
+                JOptionPane.showMessageDialog(SignupUI.this, "회원가입이 완료되었습니다.");
+                dispose(); // 창 닫기
+                onSignupComplete.run(); // 로그인 화면으로 이동
+            } else {
+                JOptionPane.showMessageDialog(SignupUI.this, "회원가입에 실패했습니다. 다시 시도해주세요.");
+            }
+        });	
+        
+        
         JPanel formContainer = new JPanel();
         formContainer.setOpaque(false);
         formContainer.setLayout(new BorderLayout(0, 20));
@@ -83,7 +105,7 @@ public class SignupUI extends JFrame {
         panel.setOpaque(false);
 
         JLabel label = new JLabel(labelText);
-        label.setPreferredSize(new Dimension(80, 40));
+        label.setPreferredSize(new Dimension(120, 40));
         label.setFont(new Font("맑은 고딕", Font.BOLD, 14));
         label.setForeground(new Color(51, 51, 51));
         label.setHorizontalAlignment(SwingConstants.LEFT);
@@ -94,7 +116,7 @@ public class SignupUI extends JFrame {
         } else {
             input = new JTextField();
         }
-        input.setPreferredSize(new Dimension(300, 40));
+        input.setPreferredSize(new Dimension(240, 40));
         input.setFont(new Font("맑은 고딕", Font.PLAIN, 16));
         input.setBackground(new Color(227, 232, 236));
         input.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));

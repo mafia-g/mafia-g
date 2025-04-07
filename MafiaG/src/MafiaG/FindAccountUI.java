@@ -1,8 +1,8 @@
-// FindAccountUI.java
 package MafiaG;
 
 import javax.swing.*;
 import java.awt.*;
+import DB.DatabaseManager;
 
 public class FindAccountUI extends JFrame {
     public FindAccountUI(Runnable backToLogin) {
@@ -26,7 +26,7 @@ public class FindAccountUI extends JFrame {
         JPanel logoZone = new JPanel();
         logoZone.setOpaque(false);
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("D:/KIBWA_Project/untitled/src/com/test/MafiaG_logo.jpg");
+        ImageIcon logoIcon = new ImageIcon("../../MafiaG_logo.jpg");
         Image rawImage = logoIcon.getImage();
         double aspectRatio = (double) rawImage.getWidth(null) / rawImage.getHeight(null);
         int width = 200, height = (int)(200 / aspectRatio);
@@ -37,26 +37,60 @@ public class FindAccountUI extends JFrame {
         logoLabel.setIcon(new ImageIcon(rawImage.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         logoZone.add(logoLabel);
 
-        // 아이디/비번 찾기
+        // 메시지 출력용 라벨
+        JLabel messageLabel = new JLabel(" ");
+        messageLabel.setFont(new Font("맑은 고딕", Font.BOLD, 15));
+        messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // 아이디 찾기 박스
+        JPanel idBox = createFindBox("아이디 찾기", new String[]{"이메일"}, (inputs) -> {
+            String email = inputs[0].getText().trim();
+            if (email.isEmpty()) {
+                setMessage(messageLabel, "이메일을 입력해주세요.", false);
+                return;
+            }
+            String foundId = DatabaseManager.findMemberIdByEmail(email);
+            if (foundId != null) {
+                String maskedId = foundId.substring(0, 3) + "*".repeat(Math.max(0, foundId.length() - 3));
+                setMessage(messageLabel, "입력하신 이메일로 가입한 아이디는 " + maskedId + " 입니다.", true);
+            } else {
+                setMessage(messageLabel, "입력하신 이메일로 가입한 아이디를 찾을 수 없습니다.", false);
+            }
+        });
+
+        // 비밀번호 찾기 박스
+        JPanel pwBox = createFindBox("비밀번호 찾기", new String[]{"아이디", "이메일"}, (inputs) -> {
+            String id = inputs[0].getText().trim();
+            String email = inputs[1].getText().trim();
+            if (id.isEmpty() || email.isEmpty()) {
+                setMessage(messageLabel, "아이디와 이메일을 모두 입력해주세요.", false);
+                return;
+            }
+            boolean match = DatabaseManager.findPasswordByEmailAndId(id, email);
+            if (match) {
+                setMessage(messageLabel, "비밀번호 재설정 링크를 이메일로 발송했습니다.", true);
+            } else {
+                setMessage(messageLabel, "입력하신 정보로 가입한 계정을 찾을 수 없습니다.", false);
+            }
+        });
+
         JPanel findZone = new JPanel(new GridLayout(1, 2, 40, 0));
         findZone.setOpaque(false);
         findZone.setMaximumSize(new Dimension(700, 300));
-        findZone.add(createFindBox("아이디 찾기", new String[]{"이메일"}));
-        findZone.add(createFindBox("비밀번호 찾기", new String[]{"아이디", "이메일"}));
+        findZone.add(idBox);
+        findZone.add(pwBox);
 
-        // 메시지 및 돌아가기
-        JLabel messageLabel = new JLabel("입력해주신 이메일로 가입하신 아이디는 abc1***입니다.");
-        messageLabel.setFont(new Font("맑은 고딕", Font.PLAIN, 15));
-        messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        // 돌아가기 버튼
         JButton backButton = new JButton("메인 페이지로 돌아가기");
-        backButton.setPreferredSize(new Dimension(200, 45));
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+//        backButton.setPreferredSize(new Dimension(400, 45));
+        backButton.setMaximumSize(new Dimension(500, 90)); // innerBox 최대 너비와 맞춤
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT); // 중앙 정렬 유지
         backButton.setBackground(new Color(204, 230, 255));
         backButton.setForeground(new Color(68, 68, 68));
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         backButton.setFocusPainted(false);
-        backButton.setBorder(BorderFactory.createLineBorder(new Color(204, 230, 255)));
+//        backButton.setBorder(BorderFactory.createLineBorder(new Color(204, 230, 255)));
+        backButton.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20)); // 위아래 패딩 추가
         backButton.addActionListener(e -> {
             dispose();
             if (backToLogin != null) backToLogin.run();
@@ -66,15 +100,13 @@ public class FindAccountUI extends JFrame {
         innerBox.add(logoZone);
         innerBox.add(Box.createVerticalStrut(10));
         innerBox.add(findZone);
-        innerBox.add(Box.createVerticalStrut(10));
+        innerBox.add(Box.createVerticalStrut(30));
         innerBox.add(messageLabel);
-        innerBox.add(Box.createVerticalStrut(10));
+        innerBox.add(Box.createVerticalStrut(30));
         innerBox.add(backButton);
 
-//        centerBox.add(innerBox);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridy = 0;
-        gbc.weighty = 0;
         gbc.anchor = GridBagConstraints.NORTH;
         centerBox.add(innerBox, gbc);
         mainPanel.add(centerBox, BorderLayout.CENTER);
@@ -82,7 +114,7 @@ public class FindAccountUI extends JFrame {
         setVisible(true);
     }
 
-    private JPanel createFindBox(String title, String[] labels) {
+    private JPanel createFindBox(String title, String[] labels, java.util.function.Consumer<JTextField[]> onSubmit) {
         JPanel box = new JPanel();
         box.setBackground(Color.WHITE);
         box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
@@ -97,12 +129,13 @@ public class FindAccountUI extends JFrame {
         box.add(titleLabel);
         box.add(Box.createVerticalStrut(15));
 
-        for (String label : labels) {
+        JTextField[] inputs = new JTextField[labels.length];
+        for (int i = 0; i < labels.length; i++) {
             JPanel inputGroup = new JPanel();
             inputGroup.setLayout(new BoxLayout(inputGroup, BoxLayout.X_AXIS));
             inputGroup.setOpaque(false);
 
-            JLabel lbl = new JLabel(label);
+            JLabel lbl = new JLabel(labels[i]);
             lbl.setPreferredSize(new Dimension(80, 40));
             lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
 
@@ -117,6 +150,7 @@ public class FindAccountUI extends JFrame {
             inputGroup.add(input);
             box.add(inputGroup);
             box.add(Box.createVerticalStrut(10));
+            inputs[i] = input;
         }
 
         JButton button = new JButton(title);
@@ -125,11 +159,17 @@ public class FindAccountUI extends JFrame {
         button.setForeground(new Color(68, 68, 68));
         button.setFont(new Font("SansSerif", Font.BOLD, 16));
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20)); // padding 추가
-        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45)); // 가로 전체
+        button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        button.addActionListener(e -> onSubmit.accept(inputs));
         box.add(button);
 
-
         return box;
+    }
+
+    private void setMessage(JLabel label, String text, boolean success) {
+        label.setText(text);
+        label.setFont(label.getFont().deriveFont(Font.BOLD));
+        label.setForeground(success ? new Color(119, 206, 105) : new Color(255, 91, 91)); // 초록 또는 빨강
     }
 }
