@@ -9,31 +9,31 @@ public class MafiaGGame extends JFrame {
     public MafiaGGame(String username) {
         this.username = username;
 
-        setTitle("°ÔÀÓ ÇÃ·¹ÀÌ È­¸é");
+        setTitle("ê²Œì„ í”Œë ˆì´ í™”ë©´");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JLabel infoLabel = new JLabel("¿©±â´Â °ÔÀÓ ÇÃ·¹ÀÌ È­¸éÀÔ´Ï´Ù.", SwingConstants.CENTER);
+        JLabel infoLabel = new JLabel("ì—¬ê¸°ëŠ” ê²Œì„ í”Œë ˆì´ í™”ë©´ì…ë‹ˆë‹¤.", SwingConstants.CENTER);
         infoLabel.setFont(new Font("Arial", Font.BOLD, 24));
         add(infoLabel, BorderLayout.CENTER);
 
-        // ¹öÆ° ÆĞ³Î
+        // ë²„íŠ¼ íŒ¨ë„
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 20));
         
-        // ½Â¸® ¹öÆ°
-        JButton winButton = new JButton("½Â¸® °á°ú º¸±â");
+        // ìŠ¹ë¦¬ ë²„íŠ¼
+        JButton winButton = new JButton("ìŠ¹ë¦¬ ê²°ê³¼ ë³´ê¸°");
         winButton.addActionListener(e -> {
-            dispose(); // ÇöÀç Ã¢ ´İ°í
-            new MafiaGResult(username, true); // ½Â¸® °á°ú Ã¢ ¶ç¿ì±â
+            dispose(); // í˜„ì¬ ì°½ ë‹«ê³ 
+            new MafiaGResult(username, true); // ìŠ¹ë¦¬ ê²°ê³¼ ì°½ ë„ìš°ê¸°
         });
 
-        // ÆĞ¹è ¹öÆ°
-        JButton loseButton = new JButton("ÆĞ¹è °á°ú º¸±â");
+        // íŒ¨ë°° ë²„íŠ¼
+        JButton loseButton = new JButton("íŒ¨ë°° ê²°ê³¼ ë³´ê¸°");
         loseButton.addActionListener(e -> {
-            dispose(); // ÇöÀç Ã¢ ´İ°í
-            new MafiaGResult(username, false); // ÆĞ¹è °á°ú Ã¢ ¶ç¿ì±â
+            dispose(); // í˜„ì¬ ì°½ ë‹«ê³ 
+            new MafiaGResult(username, false); // íŒ¨ë°° ê²°ê³¼ ì°½ ë„ìš°ê¸°
         });
 
         buttonPanel.add(winButton);

@@ -16,7 +16,7 @@ package MafiaG;
 
 	public class BeforePlay extends Frame implements ActionListener {
 		private int readyCount = 0;
-	    private final int MaxPlayers = 7;
+	    private final int MaxPlayers = 1;
 		static Socket sock;
 		static BufferedWriter bw;
 		TextField tf;
@@ -31,22 +31,22 @@ package MafiaG;
 			setTitle("MafiaG");
 			setLayout(new BorderLayout());
 
-			Panel bar = new Panel(); // »ó´Ü ·Î°í, ´Ğ³×ÀÓ
-			Panel Chatroom = new Panel(); // Áß¾Ó Ã¤ÆÃ¹æ
-			Panel West = new Panel(); // ·©Å·, Âü¿©ÀÚ ¸í´Ü, ½ÃÀÛ ¹öÆ°Ä­
+			Panel bar = new Panel(); // ìƒë‹¨ ë¡œê³ , ë‹‰ë„¤ì„
+			Panel Chatroom = new Panel(); // ì¤‘ì•™ ì±„íŒ…ë°©
+			Panel West = new Panel(); // ë­í‚¹, ì°¸ì—¬ì ëª…ë‹¨, ì‹œì‘ ë²„íŠ¼ì¹¸
 
 			bar.setLayout(new BorderLayout());
 
-			// »ó´Ü ÁÂÃø ·Î°í, ¿ìÃø ·©Å·, ´Ğ³×ÀÓ ºÒ·¯¿À±â Ä­
+			// ìƒë‹¨ ì¢Œì¸¡ ë¡œê³ , ìš°ì¸¡ ë­í‚¹, ë‹‰ë„¤ì„ ë¶ˆëŸ¬ì˜¤ê¸° ì¹¸
 			ImageIcon logoimg = new ImageIcon("src/images/MafiaG_wordlogo.jpg");
 			JLabel logo = new JLabel(logoimg);
 
-			// database ¿¬°á ÇÊ¿ä
+			// database ì—°ê²° í•„ìš”
 			Panel rightPannel = new Panel(new FlowLayout(FlowLayout.RIGHT));
 			String rank = "1";
-			String name = "´Ğ³×ÀÓ";
-			JLabel ranking = new JLabel(rank + "À§");
-			JLabel nickname = new JLabel(name + "               "); // ³Ê¹« ¿À¸¥ÂÊ¿¡ ºÙ¾îÀÖ´Â Á¡À» ¿¹¹æÇÏ±â À§ÇÑ ¹öÆÛ
+			String name = "ë‹‰ë„¤ì„";
+			JLabel ranking = new JLabel(rank + "ìœ„");
+			JLabel nickname = new JLabel(name + "               "); // ë„ˆë¬´ ì˜¤ë¥¸ìª½ì— ë¶™ì–´ìˆëŠ” ì ì„ ì˜ˆë°©í•˜ê¸° ìœ„í•œ ë²„í¼
 			rightPannel.add(ranking);
 			rightPannel.add(nickname);
 
@@ -56,21 +56,21 @@ package MafiaG;
 			add(bar, BorderLayout.NORTH);
 			bar.setSize(1200, 50);
 
-			// West ¿ŞÂÊÆí ±â´Éµé
+			// West ì™¼ìª½í¸ ê¸°ëŠ¥ë“¤
 			West.setLayout(new BorderLayout());
-			 Label rankingLabel = new Label("·©Å·", Label.CENTER);
+			 Label rankingLabel = new Label("ë­í‚¹", Label.CENTER);
 		     rankingLabel.setBackground(new Color(230, 220, 250));
 		     rankingLabel.setPreferredSize(new Dimension(150, 250));
 
-		     TextArea participants = new TextArea("Âü¿©ÀÚ ¸í´Ü\nuser01\nuser02");
+		     TextArea participants = new TextArea("ì°¸ì—¬ì ëª…ë‹¨\nuser01\nuser02");
 		     participants.setEditable(false);
 		     participants.setPreferredSize(new Dimension(150, 100));
 
-			Button start = new Button("Start"); // 3. start ¹öÆ°
+			Button start = new Button("Start"); // 3. start ë²„íŠ¼
 			start.setPreferredSize(new Dimension(150, 50));
-			start.setEnabled(true); // ÀÓ½Ã·Î È°¼ºÈ­
+			start.setEnabled(true); // ì„ì‹œë¡œ í™œì„±í™”
 			
-//			if (totalPlayers > 1) { //2¸í ÀÌ»óÀÏ¶§ºÎÅÍ ½ÃÀÛ °¡´É
+//			if (totalPlayers > 1) { //2ëª… ì´ìƒì¼ë•Œë¶€í„° ì‹œì‘ ê°€ëŠ¥
 //				start.setEnabled(true);
 //			}
 			
@@ -78,10 +78,10 @@ package MafiaG;
 	            public void actionPerformed(ActionEvent e) {
 	                readyCount++;
 	                start.setEnabled(false);
-	                start.setLabel("´ë±â Áß...");
-	                //´ÙÀ½Ã¢À¸·Î ³Ñ¾î°¡±â À§ÇÑ ÄÚµå
-	                if (readyCount >= MaxPlayers) { //¼öÁ¤ ÇÊ¿ä
-	                    dispose(); //¼öÁ¤ ÇÊ¿ä
+	                start.setLabel("ëŒ€ê¸° ì¤‘...");
+	                //ë‹¤ìŒì°½ìœ¼ë¡œ ë„˜ì–´ê°€ê¸° ìœ„í•œ ì½”ë“œ
+	                if (readyCount >= MaxPlayers) { //ìˆ˜ì • í•„ìš”
+	                    dispose(); //ìˆ˜ì • í•„ìš”
 	                    new MafiaGGame("user01");
 	                }
 	            }
@@ -93,34 +93,34 @@ package MafiaG;
 
 			add(West, BorderLayout.WEST);
 
-			// Ã¤ÆÃÃ¢ ÆĞ³Î
+			// ì±„íŒ…ì°½ íŒ¨ë„
 			Chatroom.setLayout(new BorderLayout());
 
-			// Æ©Åä¸®¾ó ¿µ¿ª
-			JLabel tutorial = new JLabel("Æ©Åä¸®¾ó ÀÌ¹ÌÁö ³ëÃâ", JLabel.CENTER);
-			tutorial.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 28));
+			// íŠœí† ë¦¬ì–¼ ì˜ì—­
+			JLabel tutorial = new JLabel("íŠœí† ë¦¬ì–¼ ì´ë¯¸ì§€ ë…¸ì¶œ", JLabel.CENTER);
+			tutorial.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 28));
 			tutorial.setOpaque(true);
 			tutorial.setBackground(new Color(240, 240, 250));
 			tutorial.setPreferredSize(new Dimension(600, 400));
 
-			// À¯Àú ÀÔ·ÂÃ¢
+			// ìœ ì € ì…ë ¥ì°½
 			tf = new TextField();
 			tf.setEditable(true);
 			tf.addActionListener(this);
 			tf.setBackground(new Color(230, 240, 250));
-			tf.setPreferredSize(new Dimension(600, 50)); // ¿øÇÏ´Â ³ôÀÌ ¼³Á¤
+			tf.setPreferredSize(new Dimension(600, 50)); // ì›í•˜ëŠ” ë†’ì´ ì„¤ì •
 
-			// Chatroom¿¡ À§/¾Æ·¡·Î Ãß°¡
+			// Chatroomì— ìœ„/ì•„ë˜ë¡œ ì¶”ê°€
 			Chatroom.add(tutorial, BorderLayout.CENTER);
 			Chatroom.add(tf, BorderLayout.SOUTH);
 
-			// Chatroom ÀÚÃ¼¸¦ CENTER¿¡ ¹èÄ¡
+			// Chatroom ìì²´ë¥¼ CENTERì— ë°°ì¹˜
 			add(Chatroom, BorderLayout.CENTER);
 //			Chatroom.add("card2", talk);
 			Chatroom.setSize(950, 500);
 
 
-			setSize(1200, 800); // Áß¾Ó¿¡¼­ ³ëÃâµÇ°Ô ¿Å°Ü³ö¾ß..?
+			setSize(1200, 800); // ì¤‘ì•™ì—ì„œ ë…¸ì¶œë˜ê²Œ ì˜®ê²¨ë†”ì•¼..?
 			setVisible(true);
 		}
 
@@ -145,7 +145,7 @@ package MafiaG;
 //
 //			try {
 //				InetAddress addr = null;
-//				addr = InetAddress.getByAddress(new byte[] { (byte) 172, 30, 1, 71 }); // ¼­¹ö IP º¯°æ ÇÊ¿ä
+//				addr = InetAddress.getByAddress(new byte[] { (byte) 172, 30, 1, 71 }); // ì„œë²„ IP ë³€ê²½ í•„ìš”
 //				sock = new Socket(addr, 3000);
 //				OutputStream os = null;
 //				OutputStreamWriter osw = null;
@@ -191,14 +191,14 @@ package MafiaG;
 //        setTitle("MafiaG");
 //        setLayout(new BorderLayout());
 //
-//        // Ã¢ ´İ±â ÀÌº¥Æ®
+//        // ì°½ ë‹«ê¸° ì´ë²¤íŠ¸
 //        addWindowListener(new WindowAdapter() {
 //            public void windowClosing(WindowEvent e) {
 //                dispose();
 //            }
 //        });
 //
-//        // »ó´Ü ¹Ù - ·Î°í + ·©Å· ´Ğ³×ÀÓ
+//        // ìƒë‹¨ ë°” - ë¡œê³  + ë­í‚¹ ë‹‰ë„¤ì„
 //        Panel topBar = new Panel(new BorderLayout());
 //        ImageIcon logoIcon = new ImageIcon("src/images/MafiaG_wordlogo.jpg");
 //        setIconImage(logoIcon.getImage());
@@ -206,35 +206,35 @@ package MafiaG;
 //        topBar.add(logo, BorderLayout.WEST);
 //
 //        Panel rightInfo = new Panel(new FlowLayout(FlowLayout.RIGHT));
-//        JLabel rank = new JLabel("·©Å·");
-//        JLabel nickname = new JLabel("´Ğ³×ÀÓ");
+//        JLabel rank = new JLabel("ë­í‚¹");
+//        JLabel nickname = new JLabel("ë‹‰ë„¤ì„");
 //        rightInfo.add(rank);
 //        rightInfo.add(nickname);
 //        topBar.add(rightInfo, BorderLayout.EAST);
 //
 //        add(topBar, BorderLayout.NORTH);
 //
-//        // ¿ŞÂÊ - ·©Å· + Âü¿©ÀÚ + ½ÃÀÛ ¹öÆ°
+//        // ì™¼ìª½ - ë­í‚¹ + ì°¸ì—¬ì + ì‹œì‘ ë²„íŠ¼
 //        Panel leftPanel = new Panel();
 //        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 //
-//        Label rankingLabel = new Label("·©Å·", Label.CENTER);
+//        Label rankingLabel = new Label("ë­í‚¹", Label.CENTER);
 //        rankingLabel.setBackground(new Color(230, 220, 250));
 //        rankingLabel.setPreferredSize(new Dimension(150, 50));
 //
-//        TextArea participants = new TextArea("Âü¿©ÀÚ ¸í´Ü\nuser01\nuser02");
+//        TextArea participants = new TextArea("ì°¸ì—¬ì ëª…ë‹¨\nuser01\nuser02");
 //        participants.setEditable(false);
 //        participants.setPreferredSize(new Dimension(150, 300));
 //
-//        Button startBtn = new Button("½ÃÀÛ");
+//        Button startBtn = new Button("ì‹œì‘");
 //        startBtn.setPreferredSize(new Dimension(150, 50));
-//        startBtn.setEnabled(true); // ÀÓ½Ã·Î È°¼ºÈ­
+//        startBtn.setEnabled(true); // ì„ì‹œë¡œ í™œì„±í™”
 //
 //        startBtn.addActionListener(new ActionListener() {
 //            public void actionPerformed(ActionEvent e) {
 //                readyCount++;
 //                startBtn.setEnabled(false);
-//                startBtn.setLabel("´ë±â Áß...");
+//                startBtn.setLabel("ëŒ€ê¸° ì¤‘...");
 //
 //                if (readyCount >= totalPlayers) {
 //                    dispose();
@@ -248,17 +248,17 @@ package MafiaG;
 //        leftPanel.add(startBtn);
 //        add(leftPanel, BorderLayout.WEST);
 //
-//        // Áß¾Ó - Æ©Åä¸®¾ó ÀÌ¹ÌÁö + ÇÏ´Ü ÅØ½ºÆ®
+//        // ì¤‘ì•™ - íŠœí† ë¦¬ì–¼ ì´ë¯¸ì§€ + í•˜ë‹¨ í…ìŠ¤íŠ¸
 //        Panel centerPanel = new Panel(new BorderLayout());
 //
 //        ImageIcon tutorialImg = new ImageIcon("src/images/tutorial.jpg");
-//        JLabel tutorial = new JLabel("Æ©Åä¸®¾ó ÀÌ¹ÌÁö ³ëÃâ", JLabel.CENTER);
-//        tutorial.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 28));
+//        JLabel tutorial = new JLabel("íŠœí† ë¦¬ì–¼ ì´ë¯¸ì§€ ë…¸ì¶œ", JLabel.CENTER);
+//        tutorial.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 28));
 //        tutorial.setOpaque(true);
 //        tutorial.setBackground(new Color(240, 240, 250));
 //        tutorial.setPreferredSize(new Dimension(600, 400));
 //
-//        Label waitLabel = new Label("Âü¿©ÀÚ¸¦ ±â´Ù¸®´Â ÁßÀÔ´Ï´Ù...", Label.CENTER);
+//        Label waitLabel = new Label("ì°¸ì—¬ìë¥¼ ê¸°ë‹¤ë¦¬ëŠ” ì¤‘ì…ë‹ˆë‹¤...", Label.CENTER);
 //        waitLabel.setBackground(new Color(230, 240, 250));
 //
 //        centerPanel.add(tutorial, BorderLayout.CENTER);

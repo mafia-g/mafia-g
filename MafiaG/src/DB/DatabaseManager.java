@@ -4,20 +4,20 @@ import java.sql.*;
 
 public class DatabaseManager {
     private static final String URL = "jdbc:mysql://localhost:3306/mafia_game";
-    private static final String USER = ""; // º»ÀÎ DB À¯Àú¸í
-    private static final String PASSWORD = ""; // º»ÀÎ DB ºñ¹Ğ¹øÈ£
+    private static final String USER = ""; // ë³¸ì¸ DB ìœ ì €ëª…
+    private static final String PASSWORD = ""; // ë³¸ì¸ DB ë¹„ë°€ë²ˆí˜¸
 
-    // À¯ÀúÀÇ ÇöÀç Á¡¼ö °¡Á®¿À±â
+    // ìœ ì €ì˜ í˜„ì¬ ì ìˆ˜ ê°€ì ¸ì˜¤ê¸°
     public static int getUserScore(String username) {
         int score = 0;
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(
-                "SELECT ´©ÀûÁ¡¼ö FROM users WHERE È¸¿ø¾ÆÀÌµğ = ?")) {
+                "SELECT ëˆ„ì ì ìˆ˜ FROM users WHERE íšŒì›ì•„ì´ë”” = ?")) {
 
             pstmt.setString(1, username);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                score = rs.getInt("´©ÀûÁ¡¼ö");
+                score = rs.getInt("ëˆ„ì ì ìˆ˜");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -25,11 +25,11 @@ public class DatabaseManager {
         return score;
     }
 
-    // À¯ÀúÀÇ Á¡¼ö ¾÷µ¥ÀÌÆ® (°ÔÀÓ ÈÄ ¹İ¿µ)
+    // ìœ ì €ì˜ ì ìˆ˜ ì—…ë°ì´íŠ¸ (ê²Œì„ í›„ ë°˜ì˜)
     public static void updateUserScore(String username, int scoreToAdd) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(
-                "UPDATE users SET ´©ÀûÁ¡¼ö = ´©ÀûÁ¡¼ö + ? WHERE È¸¿ø¾ÆÀÌµğ = ?")) {
+                "UPDATE users SET ëˆ„ì ì ìˆ˜ = ëˆ„ì ì ìˆ˜ + ? WHERE íšŒì›ì•„ì´ë”” = ?")) {
 
             pstmt.setInt(1, scoreToAdd);
             pstmt.setString(2, username);
@@ -39,11 +39,11 @@ public class DatabaseManager {
         }
     }
 
-    // ·Î±×¾Æ¿ô (Á¾·á Àü Ã³¸®)
+    // ë¡œê·¸ì•„ì›ƒ (ì¢…ë£Œ ì „ ì²˜ë¦¬)
     public static void logoutUser(String username) {
         try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
              PreparedStatement pstmt = conn.prepareStatement(
-                "UPDATE users SET last_login = NOW() WHERE È¸¿ø¾ÆÀÌµğ = ?")) {
+                "UPDATE users SET last_login = NOW() WHERE íšŒì›ì•„ì´ë”” = ?")) {
 
             pstmt.setString(1, username);
             pstmt.executeUpdate();

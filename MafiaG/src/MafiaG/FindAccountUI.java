@@ -1,73 +1,55 @@
+// FindAccountUI.java
 package MafiaG;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class FindAccountUI extends JFrame {
-    public FindAccountUI() {
-        setTitle("¾ÆÀÌµð/ºñ¹Ð¹øÈ£ Ã£±â");
+    public FindAccountUI(Runnable backToLogin) {
+        setTitle("ì•„ì´ë””/ë¹„ë°€ë²ˆí˜¸ ì°¾ê¸°");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        JPanel mainPanel = new JPanel();
+        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(new Color(248, 248, 248));
-        mainPanel.setLayout(new BorderLayout());
 
-        JPanel centerBox = new JPanel();
+        JPanel centerBox = new JPanel(new GridBagLayout());
         centerBox.setOpaque(false);
-        centerBox.setLayout(new GridBagLayout());
 
         JPanel innerBox = new JPanel();
         innerBox.setOpaque(false);
         innerBox.setLayout(new BoxLayout(innerBox, BoxLayout.Y_AXIS));
-        innerBox.setPreferredSize(new Dimension(700, 700));
+        innerBox.setMaximumSize(new Dimension(700, Integer.MAX_VALUE));
 
-        // ·Î°í ¿µ¿ª
+        // ë¡œê³ 
         JPanel logoZone = new JPanel();
         logoZone.setOpaque(false);
-        logoZone.setMaximumSize(new Dimension(700, 120)); // Å©±â Ãà¼Ò
         JLabel logoLabel = new JLabel();
-
         ImageIcon logoIcon = new ImageIcon("D:/KIBWA_Project/untitled/src/com/test/MafiaG_logo.jpg");
         Image rawImage = logoIcon.getImage();
-
-        // ºñÀ² À¯ÁöÇÏ¸é¼­ Å©±â Á¶Á¤
-        int maxWidth = 200;
-        int maxHeight = 100;
         double aspectRatio = (double) rawImage.getWidth(null) / rawImage.getHeight(null);
-
-        int width = maxWidth;
-        int height = (int)(maxWidth / aspectRatio);
-        if (height > maxHeight) {
-            height = maxHeight;
-            width = (int)(maxHeight * aspectRatio);
+        int width = 200, height = (int)(200 / aspectRatio);
+        if (height > 100) {
+            height = 100;
+            width = (int)(100 * aspectRatio);
         }
-
-        Image scaled = rawImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        logoLabel.setIcon(new ImageIcon(scaled));
+        logoLabel.setIcon(new ImageIcon(rawImage.getScaledInstance(width, height, Image.SCALE_SMOOTH)));
         logoZone.add(logoLabel);
 
-        // ¾ÆÀÌµð/ºñ¹Ð¹øÈ£ Ã£±â ¿µ¿ª
-        JPanel findZone = new JPanel();
+        // ì•„ì´ë””/ë¹„ë²ˆ ì°¾ê¸°
+        JPanel findZone = new JPanel(new GridLayout(1, 2, 40, 0));
         findZone.setOpaque(false);
-        findZone.setLayout(new GridLayout(1, 2, 40, 0));
         findZone.setMaximumSize(new Dimension(700, 300));
+        findZone.add(createFindBox("ì•„ì´ë”” ì°¾ê¸°", new String[]{"ì´ë©”ì¼"}));
+        findZone.add(createFindBox("ë¹„ë°€ë²ˆí˜¸ ì°¾ê¸°", new String[]{"ì•„ì´ë””", "ì´ë©”ì¼"}));
 
-        JPanel findIdBox = createFindBox("¾ÆÀÌµð Ã£±â", new String[]{"ÀÌ¸ÞÀÏ"});
-        JPanel findPwBox = createFindBox("ºñ¹Ð¹øÈ£ Ã£±â", new String[]{"¾ÆÀÌµð", "ÀÌ¸ÞÀÏ"});
-
-        findZone.add(findIdBox);
-        findZone.add(findPwBox);
-
-        // ¸Þ½ÃÁö ¿µ¿ª
-        JLabel messageLabel = new JLabel("ÀÔ·ÂÇØÁÖ½Å ÀÌ¸ÞÀÏ·Î °¡ÀÔÇÏ½Å ¾ÆÀÌµð´Â abc1***ÀÔ´Ï´Ù.");
+        // ë©”ì‹œì§€ ë° ëŒì•„ê°€ê¸°
+        JLabel messageLabel = new JLabel("ìž…ë ¥í•´ì£¼ì‹  ì´ë©”ì¼ë¡œ ê°€ìž…í•˜ì‹  ì•„ì´ë””ëŠ” abc1***ìž…ë‹ˆë‹¤.");
+        messageLabel.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 15));
         messageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        messageLabel.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 15));
-        messageLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
 
-        // µ¹¾Æ°¡±â ¹öÆ°
-        JButton backButton = new JButton("¸ÞÀÎ ÆäÀÌÁö·Î µ¹¾Æ°¡±â");
+        JButton backButton = new JButton("ë©”ì¸ íŽ˜ì´ì§€ë¡œ ëŒì•„ê°€ê¸°");
         backButton.setPreferredSize(new Dimension(200, 45));
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.setBackground(new Color(204, 230, 255));
@@ -75,8 +57,12 @@ public class FindAccountUI extends JFrame {
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         backButton.setFocusPainted(false);
         backButton.setBorder(BorderFactory.createLineBorder(new Color(204, 230, 255)));
+        backButton.addActionListener(e -> {
+            dispose();
+            if (backToLogin != null) backToLogin.run();
+        });
 
-        // ¹èÄ¡
+        // ì¡°ë¦½
         innerBox.add(logoZone);
         innerBox.add(Box.createVerticalStrut(10));
         innerBox.add(findZone);
@@ -85,7 +71,12 @@ public class FindAccountUI extends JFrame {
         innerBox.add(Box.createVerticalStrut(10));
         innerBox.add(backButton);
 
-        centerBox.add(innerBox);
+//        centerBox.add(innerBox);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridy = 0;
+        gbc.weighty = 0;
+        gbc.anchor = GridBagConstraints.NORTH;
+        centerBox.add(innerBox, gbc);
         mainPanel.add(centerBox, BorderLayout.CENTER);
         add(mainPanel);
         setVisible(true);
@@ -102,7 +93,6 @@ public class FindAccountUI extends JFrame {
 
         JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
-        titleLabel.setForeground(new Color(51, 51, 51));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         box.add(titleLabel);
         box.add(Box.createVerticalStrut(15));
@@ -115,33 +105,30 @@ public class FindAccountUI extends JFrame {
             JLabel lbl = new JLabel(label);
             lbl.setPreferredSize(new Dimension(80, 40));
             lbl.setFont(new Font("SansSerif", Font.BOLD, 14));
-            lbl.setForeground(new Color(51, 51, 51));
 
             JTextField input = new JTextField();
             input.setPreferredSize(new Dimension(200, 40));
             input.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
             input.setFont(new Font("SansSerif", Font.PLAIN, 16));
             input.setBackground(new Color(227, 232, 236));
-            input.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
             inputGroup.add(lbl);
             inputGroup.add(Box.createHorizontalStrut(10));
             inputGroup.add(input);
-
             box.add(inputGroup);
             box.add(Box.createVerticalStrut(10));
         }
 
         JButton button = new JButton(title);
-        button.setPreferredSize(new Dimension(200, 45));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
         button.setBackground(new Color(204, 230, 255));
         button.setForeground(new Color(68, 68, 68));
         button.setFont(new Font("SansSerif", Font.BOLD, 16));
         button.setFocusPainted(false);
-        button.setBorder(BorderFactory.createLineBorder(new Color(204, 230, 255)));
-
+        button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20)); // padding ì¶”ê°€
+        button.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45)); // ê°€ë¡œ ì „ì²´
         box.add(button);
+
 
         return box;
     }
