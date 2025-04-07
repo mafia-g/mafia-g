@@ -6,51 +6,45 @@ import java.awt.*;
 
 public class SignupUI extends JFrame {
 
-    public SignupUI() {
-        setTitle("È¸¿ø°¡ÀÔ ÆäÀÌÁö");
+    public SignupUI(Runnable onSignupComplete) {
+        setTitle("íšŒì›ê°€ì… í˜ì´ì§€");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(1200, 800);
-        setLocationRelativeTo(null); // È­¸é Áß¾Ó
+        setLocationRelativeTo(null);
 
-        // ÀüÃ¼ ¹è°æ
         JPanel contentPane = new JPanel();
         contentPane.setBackground(new Color(248, 248, 248));
         contentPane.setLayout(new GridBagLayout());
         setContentPane(contentPane);
 
-        // °¡¿îµ¥ ¹Ú½º
         JPanel centerBox = new JPanel();
-        centerBox.setPreferredSize(new Dimension(560, 600)); // ÀüÃ¼ Å©±â
+        centerBox.setPreferredSize(new Dimension(560, 600));
         centerBox.setOpaque(false);
         centerBox.setLayout(new BorderLayout());
 
-        // ·Î°í ¿µ¿ª
         JPanel logoPanel = new JPanel();
         logoPanel.setPreferredSize(new Dimension(560, 180));
         logoPanel.setOpaque(false);
         JLabel logoLabel = new JLabel();
-        ImageIcon logoIcon = new ImageIcon("D:/KIBWA_Project/untitled/src/com/test/MafiaG_logo.jpg"); // ÀÌ¹ÌÁö °æ·Î
-        logoLabel.setIcon(new ImageIcon(logoIcon.getImage().getScaledInstance(200, 160, Image.SCALE_SMOOTH)));
+        ImageIcon logoIcon = new ImageIcon("../../MafiaG_logo.jpg");
+        logoLabel.setIcon(new ImageIcon(logoIcon.getImage().getScaledInstance(230, 160, Image.SCALE_SMOOTH)));
         logoPanel.add(logoLabel);
 
-        // ÀÔ·Â ÇÊµå ¿µ¿ª
         JPanel formPanel = new JPanel();
         formPanel.setLayout(new GridLayout(5, 1, 0, 10));
         formPanel.setOpaque(false);
 
-        // °¢°¢ÀÇ ÀÔ·Â ±×·ì
-        formPanel.add(createInputGroup("¾ÆÀÌµğ", JTextField.class));
-        formPanel.add(createInputGroup("ºñ¹Ğ¹øÈ£", JPasswordField.class));
-        formPanel.add(createInputGroup("È®ÀÎ", JPasswordField.class));
-        formPanel.add(createInputGroup("´Ğ³×ÀÓ", JTextField.class));
-        formPanel.add(createInputGroup("ÀÌ¸ŞÀÏ", JTextField.class));
+        formPanel.add(createInputGroup("ì•„ì´ë””", JTextField.class));
+        formPanel.add(createInputGroup("ë¹„ë°€ë²ˆí˜¸", JPasswordField.class));
+        formPanel.add(createInputGroup("í™•ì¸", JPasswordField.class));
+        formPanel.add(createInputGroup("ë‹‰ë„¤ì„", JTextField.class));
+        formPanel.add(createInputGroup("ì´ë©”ì¼", JTextField.class));
 
-        // ¹öÆ°
-        JButton signupButton = new JButton("È¸¿ø°¡ÀÔ");
+        JButton signupButton = new JButton("íšŒì›ê°€ì… ì™„ë£Œ");
         signupButton.setPreferredSize(new Dimension(0, 45));
         signupButton.setBackground(new Color(204, 230, 255));
         signupButton.setForeground(new Color(68, 68, 68));
-        signupButton.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 16));
+        signupButton.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 16));
         signupButton.setFocusPainted(false);
         signupButton.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         signupButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -65,6 +59,11 @@ public class SignupUI extends JFrame {
             }
         });
 
+        signupButton.addActionListener(e -> {
+            dispose(); // íšŒì›ê°€ì… ì°½ ë‹«ê¸°
+            onSignupComplete.run(); // ë‹¤ì‹œ ë¡œê·¸ì¸ UI ì‹¤í–‰
+        });
+
         JPanel formContainer = new JPanel();
         formContainer.setOpaque(false);
         formContainer.setLayout(new BorderLayout(0, 20));
@@ -72,10 +71,8 @@ public class SignupUI extends JFrame {
         formContainer.add(formPanel, BorderLayout.CENTER);
         formContainer.add(signupButton, BorderLayout.SOUTH);
 
-        // Á¶¸³
         centerBox.add(logoPanel, BorderLayout.NORTH);
         centerBox.add(formContainer, BorderLayout.CENTER);
-
         contentPane.add(centerBox);
 
         setVisible(true);
@@ -87,7 +84,7 @@ public class SignupUI extends JFrame {
 
         JLabel label = new JLabel(labelText);
         label.setPreferredSize(new Dimension(80, 40));
-        label.setFont(new Font("¸¼Àº °íµñ", Font.BOLD, 14));
+        label.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.BOLD, 14));
         label.setForeground(new Color(51, 51, 51));
         label.setHorizontalAlignment(SwingConstants.LEFT);
 
@@ -98,7 +95,7 @@ public class SignupUI extends JFrame {
             input = new JTextField();
         }
         input.setPreferredSize(new Dimension(300, 40));
-        input.setFont(new Font("¸¼Àº °íµñ", Font.PLAIN, 16));
+        input.setFont(new Font("ë§‘ì€ ê³ ë”•", Font.PLAIN, 16));
         input.setBackground(new Color(227, 232, 236));
         input.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
 
@@ -107,6 +104,4 @@ public class SignupUI extends JFrame {
 
         return panel;
     }
-
 }
-
