@@ -86,7 +86,7 @@ public class MafiaGResult extends JFrame {
         quitButton.addActionListener(e -> logoutAndExit());
         againButton.addActionListener(e -> {
             dispose();
-            new MafiaGGame(username);
+            new PlayUI();
         });
 
         buttonPanel.add(quitButton, BorderLayout.WEST);

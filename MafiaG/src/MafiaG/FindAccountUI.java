@@ -51,7 +51,7 @@ public class FindAccountUI extends JFrame {
             }
             String foundId = DatabaseManager.findMemberIdByEmail(email);
             if (foundId != null) {
-                String maskedId = foundId.substring(0, 3) + "*".repeat(Math.max(0, foundId.length() - 3));
+                String maskedId = foundId.substring(0, 3) + repeatChar('*', Math.max(0, foundId.length() - 3));
                 setMessage(messageLabel, "입력하신 이메일로 가입한 아이디는 " + maskedId + " 입니다.", true);
             } else {
                 setMessage(messageLabel, "입력하신 이메일로 가입한 아이디를 찾을 수 없습니다.", false);
@@ -82,15 +82,13 @@ public class FindAccountUI extends JFrame {
 
         // 돌아가기 버튼
         JButton backButton = new JButton("메인 페이지로 돌아가기");
-//        backButton.setPreferredSize(new Dimension(400, 45));
-        backButton.setMaximumSize(new Dimension(500, 90)); // innerBox 최대 너비와 맞춤
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT); // 중앙 정렬 유지
+        backButton.setMaximumSize(new Dimension(500, 90));
+        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.setBackground(new Color(204, 230, 255));
         backButton.setForeground(new Color(68, 68, 68));
         backButton.setFont(new Font("SansSerif", Font.BOLD, 16));
         backButton.setFocusPainted(false);
-//        backButton.setBorder(BorderFactory.createLineBorder(new Color(204, 230, 255)));
-        backButton.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20)); // 위아래 패딩 추가
+        backButton.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
         backButton.addActionListener(e -> {
             dispose();
             if (backToLogin != null) backToLogin.run();
@@ -170,6 +168,15 @@ public class FindAccountUI extends JFrame {
     private void setMessage(JLabel label, String text, boolean success) {
         label.setText(text);
         label.setFont(label.getFont().deriveFont(Font.BOLD));
-        label.setForeground(success ? new Color(119, 206, 105) : new Color(255, 91, 91)); // 초록 또는 빨강
+        label.setForeground(success ? new Color(119, 206, 105) : new Color(255, 91, 91));
+    }
+
+    // Java 8 호환용 repeat 함수
+    private String repeatChar(char c, int count) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            sb.append(c);
+        }
+        return sb.toString();
     }
 }
