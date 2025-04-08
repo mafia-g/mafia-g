@@ -37,17 +37,35 @@ public class PlayUI extends JFrame implements ActionListener {
     public PlayUI() {
         setTitle("MafiaG");
         setSize(1200, 800);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE); // 기본 종료 막기
         setLayout(new BorderLayout());
         setupUI();
         connectToServer();
-
         addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
-                closeConnection();
-                dispose();
+                int result = JOptionPane.showConfirmDialog(
+                    PlayUI.this,
+                    "정말 종료하시겠습니까?",
+                    "종료 확인",
+                    JOptionPane.YES_NO_OPTION
+                );
+                if (result == JOptionPane.YES_OPTION) {
+                    // 타이머 정리
+                    if (questionTimer != null) questionTimer.cancel();
+
+                    // 네트워크 자원 정리
+                    closeConnection();
+
+                    // 창 종료
+                    dispose();
+
+                    // 모든 스레드 정리 후 강제 종료
+                    System.exit(0);
+                }
             }
         });
+        setLocationRelativeTo(null);
     }
 
     private void setupUI() {
@@ -78,7 +96,10 @@ public class PlayUI extends JFrame implements ActionListener {
         startButton = new JButton("Start");
         startButton.setEnabled(true);
         startButton.setPreferredSize(new Dimension(200, 50));
-        startButton.addActionListener(e -> sendToServer("{\"type\":\"start\"}"));
+        startButton.addActionListener(e -> {
+            startButton.setEnabled(false);
+            sendToServer("{\"type\":\"start\"}");
+        });
 
         JPanel sidebarContent = new JPanel(new BorderLayout());
         sidebarContent.add(rankingScroll, BorderLayout.NORTH);
@@ -148,22 +169,37 @@ public class PlayUI extends JFrame implements ActionListener {
 
     private void connectToServer() {
         try {
-            sock = new Socket("localhost", 3456);
+            sock = new Socket("localhost", 3579);
             bw = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
             br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 
-            new Thread(() -> {
+            // 서버로부터 메시지를 받는 별도의 스레드 실행
+            Thread serverThread = new Thread(() -> {
                 String line;
                 try {
                     while ((line = br.readLine()) != null) {
                         System.out.println("서버로부터: " + line);
-                        // 메시지 처리 로직 추가 가능
+
+                        if (line.contains("\"type\":\"gameStart\"")) {
+                            SwingUtilities.invokeLater(() -> {
+                                JOptionPane.showMessageDialog(this, "게임이 시작됩니다!");
+                            });
+                        }
+
+                        if (line.contains("\"type\":\"startRejected\"")) {
+                            SwingUtilities.invokeLater(() -> {
+                                JOptionPane.showMessageDialog(this, "참가자가 부족합니다. 최소 3명이 필요합니다.");
+                                startButton.setEnabled(true);
+                            });
+                        }
                     }
                 } catch (IOException e) {
                     System.out.println("서버 연결 종료됨");
                     closeConnection();
                 }
-            }).start();
+            });
+            serverThread.setDaemon(true);  // 데몬 스레드로 설정하여 JVM 종료 시 강제 종료됨
+            serverThread.start();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -193,7 +229,4 @@ public class PlayUI extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PlayUI().setVisible(true));
-    }
 }

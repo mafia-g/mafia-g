@@ -138,8 +138,6 @@ public class DatabaseManager {
         }
     }
 
-
-
     // 유저의 현재 점수 가져오기
     public static int getUserScore(String username) {
         int score = 0;

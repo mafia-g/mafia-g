@@ -19,7 +19,7 @@ public class Server {
     static int questionTurn = 0;
 
     public static void main(String[] args) {
-        try (ServerSocket serverSocket = new ServerSocket(3456)) {
+        try (ServerSocket serverSocket = new ServerSocket(3579)) {
             System.out.println("서버가 시작되었습니다");
 
             while (true) {
@@ -222,7 +222,7 @@ public class Server {
             } finally {
                 try {
                     clients.remove(this);
-                    broadcastParticipants(); // ✅ 퇴장 시에도 리스트 갱신
+                    broadcastParticipants(); //  퇴장 시에도 리스트 갱신
                     br.close();
                     bw.close();
                     socket.close();
